@@ -1,30 +1,20 @@
-/*
- * C++ Design Patterns: Observer
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
+
 
 #include <iostream>
 #include <vector>
 
-class Subject;
+class Observable;
 
 /*
  * Observer
  * defines an updating interface for objects that should be notified
- * of changes in a subject
+ * of changes in a observable
  */
 class Observer
 {
 public:
   virtual ~Observer() {}
-  
-  virtual int getState() = 0;
-  virtual void update( Subject *subject ) = 0;
+  virtual void update() = 0;
   // ...
 };
 
@@ -36,35 +26,55 @@ public:
 class ConcreteObserver : public Observer
 {
 public:
-  ConcreteObserver( const int state ) :
-    observer_state( state ) {}
+  
   
   ~ConcreteObserver() {}
-  
-  int getState()
-  {
-    return observer_state;
+  ConcreteObserver(Observable * observable) {
+    this->observable = observable;
   }
-  
-  void update( Subject *subject );
-  // ...
 
+  
+  void update()
+  {
+    std::cout << "Email Received." << std::endl;
+
+  }
 private:
-  int observer_state;
-  // ...
+  Observable * observable;  // strategy pattern 
+
 };
 
 /*
- * Subject
+ * Observable
  * knows its observers and provides an interface for attaching
  * and detaching observers
  */
-class Subject
+class Observable
 {
 public:
-  virtual ~Subject() {}
+  virtual ~Observable() {}
   
-  void attach( Observer *observer )
+  virtual void attach( Observer *observer ) = 0;
+  
+  virtual void detach( const int index ) = 0 ;
+  
+  virtual void notify() = 0;
+  
+  virtual int getState() = 0;
+  virtual void setState( const int s ) = 0;
+
+};
+
+/*
+ * Concrete Observable
+ * stores state that should stay consistent with the observable's
+ */
+class ConcreteObservable : public Observable
+{
+public:
+  ~ConcreteObservable() {}
+
+   void attach( Observer *observer )
   {
     observers.push_back(observer);
   }
@@ -78,69 +88,46 @@ public:
   {
     for ( unsigned int i = 0; i < observers.size(); i++ )
     {
-      observers.at( i )->update( this );
+      observers.at( i )->update();
     }
   }
   
-  virtual int getState() = 0;
-  virtual void setState( const int s ) = 0;
-  // ...
-
-private:
-  std::vector<Observer*> observers;
-  // ...
-};
-
-/*
- * Concrete Subject
- * stores state that should stay consistent with the subject's
- */
-class ConcreteSubject : public Subject
-{
-public:
-  ~ConcreteSubject() {}
-  
   int getState()
   {
-    return subject_state;
+    return observable_state;
   }
   
   void setState( const int s )
   {
-    subject_state = s;
+    observable_state = s;
+    notify();
   }
   // ...
   
 private:
-  int subject_state;
+  int observable_state;
+  std::vector<Observer*> observers;
   // ...
 };
 
-void ConcreteObserver::update( Subject *subject )
-{
-  observer_state = subject->getState();
-  std::cout << "Observer state updated." << std::endl;
-}
+
 
 
 int main()
 {
-  ConcreteObserver observer1( 1 );
-  ConcreteObserver observer2( 2 );
+  Observable *observable = new ConcreteObservable();
+
+  ConcreteObserver * observer1= new ConcreteObserver(observable);
+  ConcreteObserver * observer2 = new ConcreteObserver(observable);
+
   
-  std::cout << "Observer 1 state: " << observer1.getState() << std::endl;
-  std::cout << "Observer 2 state: " << observer2.getState() << std::endl;
+  observable->attach( observer1 );
+  observable->attach( observer2 );
   
-  Subject *subject = new ConcreteSubject();
-  subject->attach( &observer1 );
-  subject->attach( &observer2 );
-  
-  subject->setState( 10 );
-  subject->notify();
-  
-  std::cout << "Observer 1 state: " << observer1.getState() << std::endl;
-  std::cout << "Observer 2 state: " << observer2.getState() << std::endl;
-  
-  delete subject;
+  observable->setState( 10 ); //notified to all observers
+  // observable->notify();
+ 
+  std::cout<<observable->getState()<<std::endl;
+  delete observable;
   return 0;
 }
