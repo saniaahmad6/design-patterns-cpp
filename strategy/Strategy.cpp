@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Strategy
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 
@@ -25,6 +16,7 @@ public:
 /*
  * Concrete Strategies
  * implement the algorithm using the Strategy interface
+ * 3 strategies: A,B,C
  */
 class ConcreteStrategyA : public Strategy
 {
@@ -62,9 +54,13 @@ public:
   // ...
 };
 
+
 /*
  * Context
  * maintains a reference to a Strategy object
+ * has A relationship with the strategy (strategy pointer)
+ * we initialize the pointer in constructor (dependency injection)
+ * and we call the algorithm interface in the context interface, acc to strategy
  */
 class Context
 {
