@@ -1,13 +1,3 @@
-/*
- * C++ Design Patterns: Factory Method
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
-
 #include <iostream>
 #include <string>
 
@@ -58,17 +48,16 @@ public:
 };
 
 /*
- * Creator
+ * Factory
  * contains the implementation for all of the methods
  * to manipulate products except for the factory method
  */
-class Creator
+class Factory
 {
 public:
-  virtual ~Creator() {}
+  virtual ~Factory() {}
   
-  virtual Product* createProductA() = 0;
-  virtual Product* createProductB() = 0;
+  virtual Product* createProduct(std::string type) = 0;
   
   virtual void removeProduct( Product *product ) = 0;
   
@@ -76,24 +65,24 @@ public:
 };
 
 /*
- * Concrete Creator
+ * Concrete Factory
  * implements factory method that is responsible for creating
  * one or more concrete products ie. it is class that has
  * the knowledge of how to create the products
  */
-class ConcreteCreator : public Creator
+class ConcreteFactory : public Factory
 {
 public:
-  ~ConcreteCreator() {}
+  ~ConcreteFactory() {}
   
-  Product* createProductA()
+  Product* createProduct(std::string type)
   {
+    if (type=="type A"){
+      return new ConcreteProductA();
+    }else if (type=="type B"){
+      return new ConcreteProductB();
+    }
     return new ConcreteProductA();
-  }
-  
-  Product* createProductB()
-  {
-    return new ConcreteProductB();
   }
   
   void removeProduct( Product *product )
@@ -106,16 +95,16 @@ public:
 
 int main()
 {
-  Creator *creator = new ConcreteCreator();
+  Factory *factory = new ConcreteFactory();
   
-  Product *p1 = creator->createProductA();
+  Product *p1 = factory->createProduct("type A");
   std::cout << "Product: " << p1->getName() << std::endl;
-  creator->removeProduct( p1 );
+  factory->removeProduct( p1 );
   
-  Product *p2 = creator->createProductB();
+  Product *p2 = factory->createProduct("type B");
   std::cout << "Product: " << p2->getName() << std::endl;
-  creator->removeProduct( p2 );
+  factory->removeProduct( p2 );
   
-  delete creator;
+  delete factory;
   return 0;
 }
