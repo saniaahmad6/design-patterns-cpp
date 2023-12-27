@@ -1,57 +1,48 @@
-/*
- * C++ Design Patterns: Decorator
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 
 /*
- * Component
+ * Base
  * defines an interface for objects that can have responsibilities
  * added to them dynamically
  */
-class Component
+class Base
 {
 public:
-  virtual ~Component() {}
+  virtual ~Base() {}
   
   virtual void operation() = 0;
   // ...
 };
 
 /*
- * Concrete Component
+ * Concrete Base
  * defines an object to which additional responsibilities
- * can be attached
+ * can be attached (eg types of pizza)
  */
-class ConcreteComponent : public Component
+class ConcreteBase : public Base
 {
 public:
-  ~ConcreteComponent() {}
+  ~ConcreteBase() {}
   
   void operation()
   {
-    std::cout << "Concrete Component operation" << std::endl;
+    std::cout << "Concrete Base operation" << std::endl;
   }
   // ...
 };
 
 /*
  * Decorator
- * maintains a reference to a Component object and defines an interface
- * that conforms to Component's interface
+ * maintains a reference to a Base object and defines an interface
+ * that conforms to Base's interface
  */
-class Decorator : public Component
+class Decorator : public Base  //is A
 {
 public:
   ~Decorator() {}
   
-  Decorator( Component *c ) : component( c ) {}
+  Decorator( Base *c ) : component( c ) {}
   
   virtual void operation()
   {
@@ -60,7 +51,7 @@ public:
   // ...
 
 private:
-  Component *component;
+  Base *component; //has A
 };
 
 /*
@@ -71,7 +62,7 @@ private:
 class ConcreteDecoratorA : public Decorator
 {
 public:
-  ConcreteDecoratorA( Component *c ) : Decorator( c ) {}
+  ConcreteDecoratorA( Base *c ) : Decorator( c ) {}
   
   void operation()
   {
@@ -84,7 +75,7 @@ public:
 class ConcreteDecoratorB : public Decorator
 {
 public:
-  ConcreteDecoratorB( Component *c ) : Decorator( c ) {}
+  ConcreteDecoratorB( Base *c ) : Decorator( c ) {}
   
   void operation()
   {
@@ -97,11 +88,11 @@ public:
 
 int main()
 {
-  ConcreteComponent  *cc = new ConcreteComponent();
+  ConcreteBase  *cc = new ConcreteBase();
   ConcreteDecoratorB *db = new ConcreteDecoratorB( cc );
   ConcreteDecoratorA *da = new ConcreteDecoratorA( db );
   
-  Component *component = da;
+  Base *component = da;
   component->operation();
   
   delete da;
