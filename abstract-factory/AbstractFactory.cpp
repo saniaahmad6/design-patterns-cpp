@@ -1,15 +1,6 @@
-/*
- * C++ Design Patterns: Abstract Factory
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
-
+#include <string>
 /*
  * Product A
  * products implement the same interface so that the classes can refer
@@ -20,7 +11,7 @@ class ProductA
 public:
   virtual ~ProductA() {}
   
-  virtual const char* getName() = 0;
+  virtual std::string getName() = 0;
   // ...
 };
 
@@ -33,7 +24,7 @@ class ConcreteProductAX : public ProductA
 public:
   ~ConcreteProductAX() {}
   
-  const char* getName()
+  std::string getName()
   {
     return "A-X";
   }
@@ -45,7 +36,7 @@ class ConcreteProductAY : public ProductA
 public:
   ~ConcreteProductAY() {}
   
-  const char* getName()
+  std::string getName()
   {
     return "A-Y";
   }
@@ -62,7 +53,7 @@ class ProductB
 public:
   virtual ~ProductB() {}
   
-  virtual const char* getName() = 0;
+  virtual std::string getName() = 0;
   // ...
 };
 
@@ -75,7 +66,7 @@ class ConcreteProductBX : public ProductB
 public:
   ~ConcreteProductBX() {}
   
-  const char* getName()
+  std::string getName()
   {
     return "B-X";
   }
@@ -87,7 +78,7 @@ class ConcreteProductBY : public ProductB
 public:
   ~ConcreteProductBY() {}
   
-  const char* getName()
+  std::string getName()
   {
     return "B-Y";
   }
@@ -98,10 +89,10 @@ public:
  * Abstract Factory
  * provides an abstract interface for creating a family of products
  */
-class AbstractFactory
+class Factory
 {
 public:
-  virtual ~AbstractFactory() {}
+  virtual ~Factory() {}
   
   virtual ProductA *createProductA() = 0;
   virtual ProductB *createProductB() = 0;
@@ -112,7 +103,7 @@ public:
  * each concrete factory create a family of products and client uses
  * one of these factories so it never has to instantiate a product object
  */
-class ConcreteFactoryX : public AbstractFactory
+class ConcreteFactoryX : public Factory
 {
 public:
   ~ConcreteFactoryX() {}
@@ -128,7 +119,7 @@ public:
   // ...
 };
 
-class ConcreteFactoryY : public AbstractFactory
+class ConcreteFactoryY : public Factory
 {
 public:
   ~ConcreteFactoryY() {}
@@ -147,8 +138,8 @@ public:
 
 int main()
 {
-  ConcreteFactoryX *factoryX = new ConcreteFactoryX();
-  ConcreteFactoryY *factoryY = new ConcreteFactoryY();
+  Factory *factoryX = new ConcreteFactoryX();
+  Factory *factoryY = new ConcreteFactoryY();
 
   ProductA *p1 = factoryX->createProductA();
   std::cout << "Product: " << p1->getName() << std::endl;

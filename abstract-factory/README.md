@@ -14,3 +14,16 @@ types it produces.
 * a system should be configured with one of multiple families of products
 * a family of related product objects is designed to be used together
 * you want to provide a class library of products, and you want to reveal just their interfaces, not their implementations
+
+
+### Abstract
+Factory
+Product A  
+Product B 
+
+### Concrete
+FX, FY, PA, PB
+
+- user should use: abstract pointers
+- abstract factory should create concrete factory (x or y)
+- abstract factory pointer can create product -> a or b
