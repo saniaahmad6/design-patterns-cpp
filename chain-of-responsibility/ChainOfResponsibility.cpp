@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Chain of Responsibility
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 #include <iostream>
 
 /*
@@ -19,22 +10,24 @@ class Handler
 public:
   virtual ~Handler() {}
   
-  virtual void setHandler( Handler *s )
+  Handler( Handler *s )
   {
-    successor = s;
+    next = s;
   }
   
-  virtual void handleRequest()
+  virtual void handleRequest(int requestNo)
   {
-    if (successor != 0)
+    if (next != nullptr)
     {
-      successor->handleRequest();
+      next->handleRequest(requestNo);
     }
   }
-  // ...
 
 private:
-  Handler *successor;
+  Handler *next;
+protected:
+  int Priority1 = 1;
+  int Priority2 = 2;
 };
 
 /*
@@ -45,23 +38,18 @@ class ConcreteHandler1 : public Handler
 {
 public:
   ~ConcreteHandler1() {}
-  
-  bool canHandle()
+  ConcreteHandler1(Handler * next) : Handler(next) {}
+    
+  virtual void handleRequest(int requestNo)
   {
-    // ...
-    return false;
-  }
-  
-  virtual void handleRequest()
-  {
-    if ( canHandle() )
+    if (requestNo==Priority1)
     {
       std::cout << "Handled by Concrete Handler 1" << std::endl;
     }
     else
     {
-      std::cout << "Cannot be handled by Handler 1" << std::endl;
-      Handler::handleRequest();
+      std::cout << "Not Handled by Concrete Handler 1" << std::endl;
+      Handler::handleRequest(requestNo);
     }
     // ...
   }
@@ -72,38 +60,28 @@ class ConcreteHandler2 : public Handler
 {
 public:
   ~ConcreteHandler2() {}
-  
-  bool canHandle()
+  ConcreteHandler2(Handler * next) : Handler(next) {}
+  virtual void handleRequest(int requestNo)
   {
-    // ...
-    return true;
-  }
-  
-  virtual void handleRequest()
-  {
-    if ( canHandle() )
+    if (requestNo==Priority2)
     {
-      std::cout << "Handled by Handler 2" << std::endl;
+      std::cout << "Handled by Concrete Handler 2" << std::endl;
     }
     else
     {
-      std::cout << "Cannot be handled by Handler 2" << std::endl;
-      Handler::handleRequest();
+      std::cout << "Not Handled by Concrete Handler 2" << std::endl;
+      Handler::handleRequest(requestNo);
     }
     // ...
   }
-  
   // ...
 };
 
 
 int main()
 {
-  ConcreteHandler1 handler1;
-  ConcreteHandler2 handler2;
-  
-  handler1.setHandler( &handler2 );
-  handler1.handleRequest();
+  Handler * client = new ConcreteHandler1(new ConcreteHandler2(nullptr));
+  client->handleRequest(2);
   
   return 0;
 }
