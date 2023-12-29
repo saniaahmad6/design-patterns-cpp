@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Proxy
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 
@@ -20,7 +11,7 @@ class Subject
 public:
   virtual ~Subject() { /* ... */ }
 
-  virtual void request() = 0;
+  virtual void request() = 0;  //function declare 
   // ...
 };
 
@@ -31,7 +22,7 @@ public:
 class RealSubject : public Subject
 {
 public:
-  void request()
+  void request() //implement function
   {
     std::cout << "Real Subject request" << std::endl;
   }
@@ -57,20 +48,22 @@ public:
   
   void request()
   {
+    //pre process
     subject->request();
+    //post process
   }
   // ...
 
 private:
-  RealSubject *subject;
+  RealSubject *subject; //hasA to the concrete Subject 
 };
 
 
 int main()
 {
-  Proxy *proxy = new Proxy();
-  proxy->request();
+  Subject * client = new Proxy();
+  client->request();
   
-  delete proxy;
+  delete client;
   return 0;
 }
