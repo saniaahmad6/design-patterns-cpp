@@ -47,6 +47,17 @@ public:
   // ...
 };
 
+class NullProduct : public Product
+{
+public:
+  ~NullProduct() {}
+  
+  std::string getName()
+  {
+    return "";
+  }
+  // ...
+};
 /*
  * Factory
  * contains the implementation for all of the methods
@@ -57,7 +68,7 @@ class Factory
 public:
   virtual ~Factory() {}
   
-  virtual Product* createProduct(std::string type) = 0;
+  virtual Product* createProduct(std::string type="") = 0;
   
   virtual void removeProduct( Product *product ) = 0;
   
@@ -75,14 +86,14 @@ class ConcreteFactory : public Factory
 public:
   ~ConcreteFactory() {}
   
-  Product* createProduct(std::string type)
+  Product* createProduct(std::string type="")
   {
     if (type=="type A"){
       return new ConcreteProductA();
     }else if (type=="type B"){
       return new ConcreteProductB();
     }
-    return new ConcreteProductA();
+    return new NullProduct();
   }
   
   void removeProduct( Product *product )
@@ -104,6 +115,10 @@ int main()
   Product *p2 = factory->createProduct("type B");
   std::cout << "Product: " << p2->getName() << std::endl;
   factory->removeProduct( p2 );
+
+  Product *ptr= factory->createProduct();
+  std::cout << "Product: " << p2->getName() << std::endl;
+  factory->removeProduct( ptr );
   
   delete factory;
   return 0;
