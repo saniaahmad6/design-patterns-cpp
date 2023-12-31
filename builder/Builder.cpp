@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Builder
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 #include <string>
@@ -17,30 +8,25 @@
  */
 class Product
 {
-public:
-  void makeA( const std::string &part )
-  {
-    partA = part;
-  }
-  void makeB( const std::string &part )
-  {
-    partB = part;
-  }
-  void makeC( const std::string &part )
-  {
-    partC = part;
-  }
-  std::string get()
-  {
-    return (partA + " " + partB + " " + partC);
-  }
-  // ...
-  
-private:
+  private: //multiple attributes 
   std::string partA;
   std::string partB;
   std::string partC;
-  // ...
+  
+public:
+  //setters
+  void setA(std::string str) {
+    partA=str;
+  }
+  void setB(std::string str) {
+    partB=str; 
+  }
+  void setC(std::string str) {
+    partC=str;
+  }
+  void print(){
+    std::cout<<partA<<" "<<partB<<" "<<partC<<std::endl;
+  }
 };
 
 /*
@@ -51,19 +37,13 @@ class Builder
 {
 public:
   virtual ~Builder() {}
-  
-  Product get()
-  {
-    return product;
-  }
-  
-  virtual void buildPartA() = 0;
-  virtual void buildPartB() = 0;
-  virtual void buildPartC() = 0;
-  // ...
+  //setters
+  virtual void buildA(std::string str)=0;
+  virtual void buildB(std::string str)=0;
+  virtual void buildC(std::string str)=0;
+  //build
+  virtual Product * build()=0;
 
-protected:
-  Product product;
 };
 
 /*
@@ -72,38 +52,44 @@ protected:
  */
 class ConcreteBuilderX : public Builder
 {
+  Product * product;
 public:
-  void buildPartA()
-  {
-    product.makeA( "A-X" );
+  ConcreteBuilderX() {product = new Product();}
+  ~ConcreteBuilderX() {delete  product;}
+  void buildA(std::string str) {
+    product->setA(str);
   }
-  void buildPartB()
-  {
-    product.makeB( "B-X" );
+  void buildB(std::string str) {
+    product->setB(str);
   }
-  void buildPartC()
-  {
-    product.makeC( "C-X" );
+  void buildC(std::string str) {
+    product->setC(str);
   }
-  // ...
+  Product * build(){
+    return this->product;
+  }
 };
 
 class ConcreteBuilderY : public Builder
 {
 public:
-  void buildPartA()
-  {
-    product.makeA( "A-Y" );
+  Product * product;
+public:
+  ConcreteBuilderY() {product = new Product();}
+  ~ConcreteBuilderY() {delete  product;}
+  
+  void buildA(std::string str) {
+    product->setA(str);
   }
-  void buildPartB()
-  {
-    product.makeB( "B-Y" );
+  void buildB(std::string str) {
+    product->setB(str);
   }
-  void buildPartC()
-  {
-    product.makeC( "C-Y" );
+  void buildC(std::string str) {
+    product->setC(str);
   }
-  // ...
+  Product * build(){
+    return this->product;
+  }
 };
 
 /*
@@ -111,8 +97,10 @@ public:
  * responsible for managing the correct sequence of object creation
  */
 class Director {
+private:
+  Builder *builder; //has A 
 public:
-  Director() : builder() {}
+  Director(Builder * builder) : builder(builder) {} // 2 concrete builders can have there place
   
   ~Director()
   {
@@ -121,49 +109,35 @@ public:
       delete builder;
     }
   }
-  
-  void set( Builder *b )
-  {
-    if ( builder )
-    {
-      delete builder;
-    }
-    builder = b;
+ 
+  Product * createX () {
+    builder->buildA("SANIA");
+    builder->buildB("WOW");
+    return builder->build();
   }
-  
-  Product get()
-  {
-    return builder->get();
-  }
-  
-  void construct()
-  {
-    builder->buildPartA();
-    builder->buildPartB();
-    builder->buildPartC();
-    // ...
-  }
-  // ...
 
-private:
-  Builder *builder;
+  Product * createY () {
+    builder->buildA("SANIA");
+    builder->buildB("WOW");
+    builder->buildC("WOW");
+    return builder->build();
+  }
 };
 
 
 int main()
 {
-  Director director;
-  director.set( new ConcreteBuilderX );
-  director.construct();
+  Director directorRefX(new ConcreteBuilderX()); // x type product
+  Director directorRefY(new ConcreteBuilderY()); // y type product
   
-  Product product1 = director.get();
-  std::cout << "1st product parts: " << product1.get() << std::endl;
-  
-  director.set( new ConcreteBuilderY );
-  director.construct();
-  
-  Product product2 = director.get();
-  std::cout << "2nd product parts: " << product2.get() << std::endl;
+  Product * productX = directorRefX.createX();
+  productX->print();
+
+  ConcreteBuilderX a;
+  a.buildA("SANIA");
+  a.buildB("WOW");
+  Product * ptr= a.build();
+  ptr->print();
   
   return 0;
 }
