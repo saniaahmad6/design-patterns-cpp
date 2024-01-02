@@ -9,7 +9,7 @@ using namespace std;
 class Singleton
 {
 private:
-  static Singleton *instance;
+  static volatile Singleton *instance;
   static std::mutex mtx;
   Singleton(); //defined later
   Singleton( Singleton const& ) ;
@@ -23,7 +23,7 @@ public:
   // the constructor and the operator as private
   
 
-  static Singleton* getInstance()
+  static volatile Singleton* getInstance()
   {
 
     if (instance==nullptr)
@@ -39,7 +39,7 @@ public:
   
 };
 
-Singleton* Singleton::instance = nullptr;
+volatile Singleton* Singleton::instance = nullptr;
 mutex Singleton::mtx;
 
 Singleton::Singleton(){
@@ -47,9 +47,8 @@ Singleton::Singleton(){
 }
 int main()
 {
-  Singleton * instance=Singleton::getInstance(); //Singleton()
-  Singleton * instance1=Singleton::getInstance(); //instance returned
-  Singleton * instance2=Singleton::getInstance(); //instance returned
+  volatile Singleton * instance=Singleton::getInstance(); //Singleton()
+  volatile Singleton * instance1=Singleton::getInstance(); //instance returned
   
   return 0;
 }
