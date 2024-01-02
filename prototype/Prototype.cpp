@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Prototype
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 #include <string>
@@ -29,14 +20,14 @@ public:
  * Concrete Prototype A and B
  * implement an operation for cloning itself
  */
-class ConcretePrototypeA : public Prototype
+class ClassA : public Prototype
 {
 public:
-  ~ConcretePrototypeA() {}
+  ~ClassA() {}
   
   Prototype* clone()
   {
-    return new ConcretePrototypeA();
+    return new ClassA();
   }
   std::string type()
   {
@@ -45,14 +36,14 @@ public:
   // ...
 };
 
-class ConcretePrototypeB : public Prototype
+class ClassB : public Prototype
 {
 public:
-  ~ConcretePrototypeB() {}
+  ~ClassB() {}
   
   Prototype* clone()
   {
-    return new ConcretePrototypeB();
+    return new ClassB();
   }
   std::string type()
   {
@@ -63,15 +54,17 @@ public:
 
 /*
  * Client
- * creates a new object by asking a prototype to clone itself
+ * creates a new object by asking a prototype to clone itself 
+ * client - > not important in terms of structure
+ * look at class A and B which are of Prototype type
  */
 class Client
 {
 public:
   static void init()
   {
-    types[ 0 ] = new ConcretePrototypeA();
-    types[ 1 ] = new ConcretePrototypeB();
+    types[ 0 ] = new ClassA();
+    types[ 1 ] = new ClassB();
   }
   
   static void remove()
