@@ -34,7 +34,7 @@ public:
         }
       mtx.unlock();
     }    
-    else return instance;
+    return instance;
   }
   
 };
