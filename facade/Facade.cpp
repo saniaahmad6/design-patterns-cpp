@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Facade
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 
@@ -56,7 +47,7 @@ public:
 class Facade
 {
 public:
-  Facade() : subsystemA(), subsystemB(), subsystemC() {}
+  Facade() : subsystemA(), subsystemB(), subsystemC() {} //new 
   
   void operation1()
   {
