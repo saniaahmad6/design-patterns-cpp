@@ -1,51 +1,29 @@
-/*
- * C++ Design Patterns: Command
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
+#include <stack>
 
-/*
- * Receiver
- * knows how to perform the operations associated
- * with carrying out a request
- */
-class Receiver
+class Receiver //concrete
 {
 public:
   void action()
   {
-    std::cout << "Receiver: execute action" << std::endl;
+    std::cout << "Receiver:  action" << std::endl;
   }
   // ...
 };
 
-/*
- * Command
- * declares an interface for all commands
- */
-class Command
+class Command // abstract
 {
 public:
   virtual ~Command() {}
   virtual void execute() = 0;
-  // ...
+  virtual void undo() = 0;
 
 protected:
   Command() {}
 };
 
-/*
- * Concrete Command
- * implements execute by invoking the corresponding
- * operation(s) on Receiver
- */
-class ConcreteCommand : public Command
+class ConcreteCommand : public Command   //has receiver pointers
 {
 public:
   ConcreteCommand( Receiver *r ) : receiver( r ) {}
@@ -62,6 +40,9 @@ public:
   {
     receiver->action();
   }
+  void undo(){
+    receiver->action();
+  }
   // ...
   
 private:
@@ -69,12 +50,12 @@ private:
   // ...
 };
 
-/*
- * Invoker
- * asks the command to carry out the request
- */
-class Invoker
+class Invoker //has a command pointer
 {
+  private:
+  Command *command;
+  std::stack <Command *> history;
+  // ...
 public:
   void set( Command *c )
   {
@@ -85,14 +66,21 @@ public:
   {
     if ( command )
     {
-      command->execute();  
+      command->execute(); 
+      history.push(command); 
     }
   }
   // ...
 
-private:
-  Command *command;
-  // ...
+  void undo () {
+    if (!history.empty()) {
+      Command * ptr = history.top();
+      history.pop();
+      ptr->undo();
+    }
+  }
+
+
 };
 
 
@@ -103,6 +91,7 @@ int main()
   Invoker invoker;
   invoker.set( &command );
   invoker.confirm();
+  invoker.undo();
   
   return 0;
 }
