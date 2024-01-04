@@ -19,7 +19,7 @@ class AbstractClass
 public:
   virtual ~AbstractClass() {}
   
-  void templateMethod()
+  virtual void templateMethod() final
   {
     // ...
     primitiveOperation1();
