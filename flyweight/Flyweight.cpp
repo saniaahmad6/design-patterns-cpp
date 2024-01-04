@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Flyweight
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 #include <map>
@@ -20,7 +11,7 @@ class Flyweight
 {
 public:
   virtual ~Flyweight() {}
-  virtual void operation() = 0;
+  virtual void operation() = 0; //to be used with extrinsic
   // ...
 };
 
@@ -28,7 +19,7 @@ public:
  * UnsharedConcreteFlyweight
  * not all subclasses need to be shared
  */
-class UnsharedConcreteFlyweight : public Flyweight
+class UnsharedConcreteFlyweight : public Flyweight //same as a derived class
 {
 public:
   UnsharedConcreteFlyweight( const int intrinsic_state ) :
@@ -43,7 +34,7 @@ public:
   // ...
   
 private:
-  int state;
+  int state; // intrinsic
   // ...
 };
 
@@ -52,7 +43,7 @@ private:
  * implements the Flyweight interface and adds storage
  * for intrinsic state
  */
-class ConcreteFlyweight : public Flyweight
+class ConcreteFlyweight : public Flyweight //same as a derived class
 {
 public:
   ConcreteFlyweight( const int all_state ) :
@@ -76,7 +67,7 @@ private:
  * creates and manages flyweight objects and ensures
  * that flyweights are shared properly
  */
-class FlyweightFactory
+class FlyweightFactory  //caching
 {
 public:
   ~FlyweightFactory()
