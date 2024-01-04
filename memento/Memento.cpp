@@ -1,12 +1,3 @@
-/*
- * C++ Design Patterns: Memento
- * Author: Jakub Vojvoda [github.com/JakubVojvoda]
- * 2016
- *
- * Source code is licensed under MIT License
- * (for more details see LICENSE)
- *
- */
 
 #include <iostream>
 #include <vector>
@@ -60,8 +51,8 @@ public:
   {
     return state;
   }
-  
-  void setMemento( Memento* const m )
+  //must methods
+  void restoreMemento( Memento* const m )
   {
     state = m->getState();
   }
@@ -109,7 +100,7 @@ public:
     }
     
     Memento *m = history.back();
-    originator->setMemento( m );
+    originator->restoreMemento( m );
     std::cout << "Undo state." << std::endl;
     
     history.pop_back();
